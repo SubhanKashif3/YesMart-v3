@@ -26,15 +26,23 @@ const productSchema = new Schema<IProduct>({
         required : [true,"Product Company is required"]
     },
 
-    productCategory : {
-        type : String,
-        enum : ["electronics","toys","cosmetics","stationary","frozen-items","crockery"],
-        required : [true,"Product category is required"]
-    }, 
 
     productPrice : {
         type : Number,
         required : [true,"product price is required"]
+    },
+
+
+    productCategory : {
+        type : String,
+        enum : [
+            "electronics",
+            "cosmetics",
+            "crockery",
+            "frozen-items",
+            "snacks-and-drinks",
+        ],
+        required : [true,"product category is required"]
     },
 
     coverImage : {

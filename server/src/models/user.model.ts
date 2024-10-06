@@ -12,6 +12,9 @@ export interface IUser extends Document{
     refreshToken : string;
     createdAt : Date;
     updatedAt : Date;
+    generateAccessToken : Function,
+    generateRefreshToken : Function,
+    comparePassword : Function
 };
 
 const userSchema = new Schema<IUser>({
@@ -24,13 +27,8 @@ const userSchema = new Schema<IUser>({
         required : [true,"last name is required"]
     },
 
-    username : {
-        type : String,
-        unique : true,
-        lowercase : true,
-        trim : true,
-        required : [true,"username is required"]
-    },
+  
+
     email : {
         type : String,
         unique : true,
