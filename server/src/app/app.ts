@@ -1,7 +1,7 @@
 import express, {Application, Request, Response} from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { userRouter } from "../routes";
+import { userRouter , adminRouter } from "../routes";
 
 
 const app : Application = express();
@@ -14,5 +14,5 @@ app.use(express.json({
 app.use(express.urlencoded({extended : true}));
 
 app.use("/api/users/",userRouter);
-
+app.use("/api/admin",adminRouter)
 export default app;
