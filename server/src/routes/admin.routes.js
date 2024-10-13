@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { login } from "../controllers/admin";
 
+
 const adminRouter = Router();
 
-adminRouter.route("/login",login);
+adminRouter.post("/login",login);
 
 
 export {adminRouter};

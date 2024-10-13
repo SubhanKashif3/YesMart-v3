@@ -13,7 +13,7 @@ export const changePassword = async (req: RequestInterface, res: Response): Prom
         const user: IUser | null | undefined = req.user;
 
         if (!user) {
-            const errorResponseBody: ErrorResponseBody = {
+            const errorResponseBody: ResponseBody = {
                 message: "User not found",
                 data: {}
             };
@@ -24,7 +24,7 @@ export const changePassword = async (req: RequestInterface, res: Response): Prom
         const isOldPasswordCorrect = await user.comparePassword(oldPassword);
 
         if (!isOldPasswordCorrect) {
-            const errorResponseBody: ErrorResponseBody = {
+            const errorResponseBody: ResponseBody = {
                 message: "Current password is incorrect",
                 data: {}
             };
@@ -52,7 +52,7 @@ export const changePassword = async (req: RequestInterface, res: Response): Prom
         console.error("Error changing password:", error); // Log the error for debugging
         const errorResponseBody: ErrorResponseBody = {
             message: "An error occurred while changing the password",
-            data: {}
+            errorMessage : (error as Error).message
         };
         return res.status(500).json(errorResponseBody);
     }
