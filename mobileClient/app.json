@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "mobileClient",
-    "slug": "mobileClient",
+    "name": "YesMart",
+    "slug": "YesMart",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./assets/applogo.png",
+    "scheme": "YesMart",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/applogo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/applogo.png",
         "backgroundColor": "#ffffff"
       }
     },

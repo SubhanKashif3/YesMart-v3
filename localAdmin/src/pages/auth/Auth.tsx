@@ -1,17 +1,27 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { apiClient } from "@/utilities/apiClient"
+import useAdminStore from "@/store/store"
+import { useNavigate } from "react-router-dom"
 
 const Auth = () => {
+    const navigator = useNavigate()
+    const {isLoggedIn , setLoggedIn} = useAdminStore();
 
-
+    useEffect(()=>{
+        if (isLoggedIn){
+            navigator("/")
+        }
+    },[navigator,isLoggedIn,setLoggedIn])
     const [password , setPassword] = useState<string>("");
 
 
     const handleButtonClick = async () => {
         const response = await apiClient.post("/admin/login",{password});
-        console.log(response.data)
+        console.log(response.data.data);
+        setLoggedIn(true);
+        navigator("/")
     }
   return (
     <div className="w-full h-screen bg-slate-900 flex justify-center items-center">
