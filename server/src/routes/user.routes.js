@@ -8,4 +8,4 @@ userRouter.post("/register",register)
 userRouter.post("/login",login);
 userRouter.post("/logout",isNormalUser,logout);
 userRouter.post("/changePassword",isNormalUser,changePassword);
-export { userRouter } ;                                                  
+export { userRouter };                                                  
