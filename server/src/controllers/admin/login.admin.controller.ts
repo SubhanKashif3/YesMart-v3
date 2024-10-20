@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { generateAdminRefreshAndAccessToken } from "../../utilities/generateAdminRefreshAndAccessToken";
 import { ErrorResponseBody, ResponseBody } from "../../constants/interfaces";
 import { cookieOptions } from "../../constants/cookieOptions";
+import { sendResponse } from "../../utilities";
 
 interface AdminLoginRequestBody {
     password: string;
@@ -31,11 +32,8 @@ export const login = (req: Request, res: Response) => {
         const tokens = generateAdminRefreshAndAccessToken();
 
         if (!tokens) {
-            const responseBody: ResponseBody = {
-                message: "An error occurred while creating tokens",
-                data: {}
-            };
-            return res.status(500).json(responseBody);
+            
+            return sendResponse(res , 500 , "An error occurred while creating tokens")
         }
 
         const responseBody: ResponseBody = {
