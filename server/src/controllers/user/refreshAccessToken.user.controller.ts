@@ -3,38 +3,27 @@ import { ResponseBody, ErrorResponseBody } from "../../constants/interfaces";
 import { IUser , User } from "../../models/user.model"; // Adjust the import based on your user model location
 import { cookieOptions } from "../../constants/cookieOptions"; // Import your cookie options
 import jwt from "jsonwebtoken"; // Ensure this is installed
+import { sendResponse } from "../../utilities";
 
 export const refreshAccessTokenByRefreshToken = async (req: Request, res: Response): Promise<Response> => {
     try {
         const refreshToken = req.cookies.refreshToken; // Get the refresh token from cookies
 
         if (!refreshToken) {
-            const errorResponseBody: ResponseBody = {
-                message: "Refresh token not found",
-                data: {}
-            };
-            return res.status(401).json(errorResponseBody);
+            return sendResponse(res , 401 , "Unauthorized request or refreshToken not available or expired");
         }
 
         // Verify the refresh token
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string) as IUser;
 
         if (!decoded) {
-            const errorResponseBody: ResponseBody = {
-                message: "Invalid refresh token",
-                data: {}
-            };
-            return res.status(401).json(errorResponseBody);
+            return sendResponse(res , 400 , "Invalid Refresh Token")
         }
 
         // Find the user
         const user = await User.findById(decoded._id);
         if (!user) {
-            const errorResponseBody: ResponseBody = {
-                message: "User not found",
-                data: {}
-            };
-            return res.status(404).json(errorResponseBody);
+            return sendResponse(res , 400 , "User not found");
         }
 
         // Generate a new refresh token and access token

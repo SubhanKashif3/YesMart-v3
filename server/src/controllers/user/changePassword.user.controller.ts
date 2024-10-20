@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { RequestInterface, ResponseBody, ErrorResponseBody } from "../../constants/interfaces";
 import { IUser, User } from "../../models/user.model";
+import { sendResponse } from "../../utilities";
 
 interface ChangePasswordRequestBody {
     oldPassword: string;
@@ -13,22 +14,14 @@ export const changePassword = async (req: RequestInterface, res: Response): Prom
         const user: IUser | null | undefined = req.user;
 
         if (!user) {
-            const errorResponseBody: ResponseBody = {
-                message: "User not found",
-                data: {}
-            };
-            return res.status(404).json(errorResponseBody);
+            return sendResponse(res , 400 , "User not found");
         }
 
         // Check if the old password is correct
         const isOldPasswordCorrect = await user.comparePassword(oldPassword);
 
         if (!isOldPasswordCorrect) {
-            const errorResponseBody: ResponseBody = {
-                message: "Current password is incorrect",
-                data: {}
-            };
-            return res.status(400).json(errorResponseBody);
+            return sendResponse(res , 400 , "Current password is incorrect")
         }
 
         // Update the user's password (the model should handle hashing)
