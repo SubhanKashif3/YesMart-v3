@@ -1,14 +1,5 @@
 import { IUser } from "../../models/user.model";
 import { Request } from "express";
-export interface ResponseBody{
-    message : string;
-    data : Object | null
-};
-
-export interface ErrorResponseBody{
-    message : string;
-    errorMessage : string;
-};
 
 
 export interface RequestInterface extends Request {
