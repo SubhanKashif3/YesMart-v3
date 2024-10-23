@@ -21,7 +21,6 @@ const Auth = () => {
         const response = await apiClient.post("/admin/login",{password});
         console.log(response.data.data);
         setLoggedIn(true);
-        navigator("/")
     }
   return (
     <div className="w-full h-screen bg-slate-900 flex justify-center items-center">

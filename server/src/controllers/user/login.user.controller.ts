@@ -1,8 +1,8 @@
 import { Request , Response} from "express"
 import { IUser, User } from "../../models/user.model";
-import {  ErrorResponseBody, RequestInterface, ResponseBody } from "../../constants/interfaces";
+import { RequestInterface} from "../../constants/interfaces";
 import { cookieOptions } from "../../constants/cookieOptions";
-
+import { ResponseStream , StatusCodes} from "json-response-sender";
 type PhoneNumberAndPassword = string | number
 
 interface LoginRequestBody{
@@ -13,6 +13,7 @@ interface LoginRequestBody{
 };
 
 export const login = async (req : RequestInterface ,res : Response) => {
+    const response = new ResponseStream(res);
     try {
         const {
             emailOrPassword,
@@ -30,42 +31,33 @@ export const login = async (req : RequestInterface ,res : Response) => {
 
 
         if (!user){
-            const errorRequestBody : ResponseBody = {
-                message : "User with this email not found",
-                data : {}
-            }
+           return response.jsonResponseSender(StatusCodes.NotFound,"User not found",{});
         };
 
         const isPasswordCorrect : boolean = user?.comparePassword(password);
         
         if (!isPasswordCorrect){
-            const errorResponseBody : ResponseBody = {
-                message : "Invalid Credentials...",
-                data : {}
-            }
+            return response.jsonResponseSender(StatusCodes.BadRequest,"Invalid Credentials",{})
         };
 
         const accessToken : string = user?.generateAccessToken();
         const refreshToken : string = user?.generateRefreshToken();
 
-        const responseBody : ResponseBody = {
-            message : "User logged in",
-            data : {
+        
+
+        res.cookie("accessToken",accessToken,cookieOptions).cookie("refreshToken",refreshToken,cookieOptions);
+
+        return response.jsonResponseSender(StatusCodes.OK,"LoggedIn",
+            {
                 user,
                 tokens : {
                     accessToken,
                     refreshToken
                 }
             }
-        };
+        )
 
-        return res.status(200).cookie("accessToken",accessToken,cookieOptions).cookie("refreshToken",refreshToken,cookieOptions).json(responseBody);
     } catch (error) {
-        const errorResponseBody : ErrorResponseBody = {
-            message : "Something went wrong while logging in",
-            errorMessage : (error as Error).message
-        };
-
-        return res.status(500).json(errorResponseBody);
+        return response.jsonErrorResponseSender(StatusCodes.InternalServerError,"Something went wrong while login in",(error as Error));
     }
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { RequestInterface, ResponseBody, ErrorResponseBody } from "../../constants/interfaces";
+import { RequestInterface } from "../../constants/interfaces";
 import { IUser, User } from "../../models/user.model";
-import { sendResponse } from "../../utilities";
+import { ResponseStream, StatusCodes } from "json-response-sender";
 
 interface ChangePasswordRequestBody {
     oldPassword: string;
@@ -9,19 +9,22 @@ interface ChangePasswordRequestBody {
 }
 
 export const changePassword = async (req: RequestInterface, res: Response): Promise<Response> => {
+    const response = new ResponseStream(res);
     try {
         const { oldPassword, newPassword }: ChangePasswordRequestBody = req.body;
         const user: IUser | null | undefined = req.user;
 
         if (!user) {
-            return sendResponse(res , 400 , "User not found");
+            return response.jsonResponseSender(StatusCodes.NotFound,"User not found",
+                {}
+            )
         }
 
         // Check if the old password is correct
         const isOldPasswordCorrect = await user.comparePassword(oldPassword);
 
         if (!isOldPasswordCorrect) {
-            return sendResponse(res , 400 , "Current password is incorrect")
+            return response.jsonResponseSender(StatusCodes.BadRequest,"Old password incorrect",{})
         }
 
         // Update the user's password (the model should handle hashing)
@@ -32,21 +35,13 @@ export const changePassword = async (req: RequestInterface, res: Response): Prom
         );
 
         // Return success response
-        const responseBody: ResponseBody = {
-            message: "Password changed successfully",
-            data: {
-                user: updatedUser // Be cautious about what user info you return
-            }
-        };
+       
 
-        return res.status(200).json(responseBody);
+       return response.jsonResponseSender(StatusCodes.OK,"Password changed successfully",{
+        user : updatedUser
+       })
         
     } catch (error) {
-        console.error("Error changing password:", error); // Log the error for debugging
-        const errorResponseBody: ErrorResponseBody = {
-            message: "An error occurred while changing the password",
-            errorMessage : (error as Error).message
-        };
-        return res.status(500).json(errorResponseBody);
+        return response.jsonErrorResponseSender(StatusCodes.InternalServerError,"Something went wrong while changing user password",(error as Error))
     }
 };

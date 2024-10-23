@@ -1,7 +1,8 @@
 import { Response } from "express";
 import { IUser, User } from "../../models/user.model";
-import { ResponseBody, ErrorResponseBody, RequestInterface } from "../../constants/interfaces";
+import {  RequestInterface } from "../../constants/interfaces";
 import { cookieOptions } from "../../constants/cookieOptions";
+import { ResponseStream, StatusCodes } from "json-response-sender";
 
 interface RegisterRequestBody {
     firstName: string;
@@ -13,6 +14,7 @@ interface RegisterRequestBody {
 }
 
 export const register = async (req: RequestInterface, res: Response): Promise<Response> => {
+    const response = new ResponseStream(res);
     try {
         const { firstName, lastName, email, password, phoneNumber }: RegisterRequestBody = req.body;
 
@@ -21,11 +23,7 @@ export const register = async (req: RequestInterface, res: Response): Promise<Re
         });
 
         if (existedUser) {
-            const response: ResponseBody = {
-                message: "User with this email or phoneNumber already exists",
-                data: null
-            };
-            return res.status(400).json(response);
+            return response.jsonResponseSender(StatusCodes.BadRequest,"User with this email or phone number already exists",{});
         }
 
         const newUser: IUser = new User({
@@ -38,26 +36,17 @@ export const register = async (req: RequestInterface, res: Response): Promise<Re
 
         await newUser.save();
 
-        const responseBody: ResponseBody = {
-            message: "User registered successfully",
-            data: {
-                user: newUser
-            }
-        };
-
+        
         const accessToken: string = newUser.generateAccessToken();
         const refreshToken: string = newUser.generateRefreshToken();
 
-        return res.status(201)
-            .cookie("accessToken", accessToken, cookieOptions)
-            .cookie("refreshToken", refreshToken, cookieOptions)
-            .json(responseBody);
+        res.cookie("accessToken", accessToken, cookieOptions).cookie("refreshToken", refreshToken, cookieOptions);
+
+        return response.jsonResponseSender(StatusCodes.Created,"Registered and logged in success",{
+            user: newUser
+        })
 
     } catch (error) {
-        const errorResponseBody: ErrorResponseBody = {
-            message: "Something went wrong while registering user",
-            errorMessage: (error as Error).message
-        };
-        return res.status(500).json(errorResponseBody);
+        return response.jsonErrorResponseSender(StatusCodes.InternalServerError,"Something went wrong while registering user",(error as Error))
     }
 };

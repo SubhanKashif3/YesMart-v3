@@ -1,17 +1,19 @@
 import { NextFunction, Response } from "express";
-import { ResponseBody, RequestInterface } from "../constants/interfaces";
+import {  RequestInterface } from "../constants/interfaces";
 import jwt from "jsonwebtoken";
 import { IUser, User } from "../models/user.model";
-import { sendErrorResponse , sendResponse } from "../utilities";
+import { ResponseStream, StatusCodes } from "json-response-sender";
+
 export const isNormalUser = async (req: RequestInterface, res: Response, next: NextFunction) => {
+    const response = new ResponseStream(res);
     try {
         console.log("Entering isNormalUser middleware");
         const accessToken: string | undefined = req.cookies?.accessToken;
 
         if (!accessToken) {
             console.log("No access token found");
-            return sendResponse(res, 401, "Unauthorized request");
-        }
+            return response.jsonResponseSender(StatusCodes.Unauthorized,"Unauthorized Request",{});
+        }   
         
         let decodedToken: any;
         
@@ -21,13 +23,13 @@ export const isNormalUser = async (req: RequestInterface, res: Response, next: N
             console.log("Access token verified");
         } catch (error) {
             console.error("Error verifying access token:", error);
-            return sendResponse(res, 401, "Expired token or invalid token");
+            return response.jsonResponseSender(StatusCodes.Unauthorized,"Expired or invalid token",{})
         }
         
         const user: IUser | null = await User.findById(decodedToken._id);
         if (!user) {
             console.log("User not found");
-            return sendResponse(res, 404, "User not found");
+            return response.jsonResponseSender(StatusCodes.NotFound,"User not found",{})
         }
         
         req.user = user;
@@ -35,8 +37,8 @@ export const isNormalUser = async (req: RequestInterface, res: Response, next: N
         
         next();
     } catch (error ) {
-        console.error("Error in isNormalUser middleware:", error);
-        return sendErrorResponse(res , "Something went wrong in auth middleware of normal user", (error as Error) , 500);
+        return response.jsonErrorResponseSender(StatusCodes.InternalServerError,"Something went wrong in isLoggedIn middleware",(error as Error));
+        
     }
 };
 
