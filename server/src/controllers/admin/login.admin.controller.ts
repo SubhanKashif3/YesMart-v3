@@ -1,58 +1,45 @@
 import { Request, Response } from "express";
 import { generateAdminRefreshAndAccessToken } from "../../utilities/generateAdminRefreshAndAccessToken";
-import { ErrorResponseBody, ResponseBody } from "../../constants/interfaces";
+
 import { cookieOptions } from "../../constants/cookieOptions";
-import { sendResponse } from "../../utilities";
+import { ResponseStream, StatusCodes } from "json-response-sender";
+
 
 interface AdminLoginRequestBody {
     password: string;
 }
 
 export const login = (req: Request, res: Response) => {
+    const response = new ResponseStream(res);
     try {
         const { password }: AdminLoginRequestBody = req.body;
 
         // Check if password is provided
         if (!password) {
-            const responseBody: ResponseBody = {
-                message: "Password is required",
-                data: {}
-            };
-            return res.status(400).json(responseBody);
+            return response.jsonResponseSender(StatusCodes.BadRequest,"Password is required",{});
         }
 
         if (password !== (process.env.ADMIN_PASSWORD as string)) {
-            const responseBody: ResponseBody = {
-                message: "Password incorrect",
-                data: {}
-            };
-            return res.status(400).json(responseBody);
+            return response.jsonResponseSender(StatusCodes.BadRequest,"Password is incorrect",{});
         }
 
         const tokens = generateAdminRefreshAndAccessToken();
 
         if (!tokens) {
             
-            return sendResponse(res , 500 , "An error occurred while creating tokens")
+          return response.jsonResponseSender(StatusCodes.InternalServerError,"An error occured while creating tokens0",{})
         }
 
-        const responseBody: ResponseBody = {
-            message: "Logged In",
-            data: {
-                tokens: tokens
-            }
-        };
 
-        return res
-            .status(200)
-            .cookie("adminAccessToken", tokens.a_accessToken, cookieOptions)
-            .cookie("adminRefreshToken", tokens.a_refreshToken, cookieOptions)
-            .json(responseBody);
+         res .cookie("adminAccessToken", tokens.a_accessToken, cookieOptions).cookie("adminRefreshToken", tokens.a_refreshToken, cookieOptions)
+           
+    
+
+        return response.jsonResponseSender(StatusCodes.OK,"You are admin",{
+            tokens: tokens,
+            isAdmin : true
+        })
     } catch (error) {
-        const errorResponseBody: ErrorResponseBody = {
-            message: "An error occurred while logging in admin",
-            errorMessage: (error as Error).message
-        };
-        return res.status(500).json(errorResponseBody); // Ensure you send the error response
+        return response.jsonErrorResponseSender(StatusCodes.InternalServerError,"Something went wrong while logging admin",(error as Error))
     }
 };

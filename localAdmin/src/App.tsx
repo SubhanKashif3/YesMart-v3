@@ -5,7 +5,7 @@ import { useEffect } from "react"
 const App = () => {
   const {setLoggedIn , isLoggedIn} = useAdminStore()
   const fetchAdmin = async () => {
-      const response = await apiClient.post("/admin/get");
+      const response = await apiClient.post("/admin/get",{},{withCredentials : true});
       console.log(response.data);
       setLoggedIn(true);
   };
