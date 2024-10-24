@@ -26,7 +26,8 @@ interface AdminState {
   addProduct: (product: Product) => void
   removeProduct: (productId: string) => void
   addOrder: (order: Order) => void
-  removeOrder: (orderId: string) => void
+  removeOrder: (orderId: string) => void,
+  logoutUser: () => void
 }
 
 // Create the store
@@ -37,7 +38,7 @@ const useAdminStore = create<AdminState>((set) => ({
 
   // Actions
   setLoggedIn: (status) => set({ isLoggedIn: status }),
-  
+  logoutUser: () => set({isLoggedIn : false}),
   addProduct: (product) => set((state) => ({
     products: [...state.products, product]
   })),
