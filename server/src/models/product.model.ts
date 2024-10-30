@@ -3,7 +3,7 @@ import mongoose , {Schema , Document} from "mongoose";
 
 export interface IProduct extends Document{
     productName : string;
-    productCompany : string;
+    productCompany : mongoose.Schema.Types.ObjectId;
     productCategory : string;
     productStockQuantity : number;
     productPrice : number;
@@ -20,9 +20,8 @@ const productSchema = new Schema<IProduct>({
     },
 
     productCompany : {
-        type : String,
-        lowercase : true,
-        trim : true,
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Company",
         required : [true,"Product Company is required"]
     },
 
