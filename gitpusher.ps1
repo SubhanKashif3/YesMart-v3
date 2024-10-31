@@ -12,3 +12,5 @@ git commit -m $commitMessage
 
 # Push changes to the main branch of the origin remote
 git push -v origin main
+
+Write-Output "Finished"
