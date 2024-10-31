@@ -1,4 +1,3 @@
-# Navigate to your repository
 Set-Location ./
 
 # Stage all changes
