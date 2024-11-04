@@ -1,10 +1,18 @@
 import { Response } from "express";
 import { RequestInterface } from "../../constants/interfaces";
 import { ResponseStream, StatusCodes } from "json-response-sender";
-import { AddProductRequestBody } from "./addProduct.onlyadmin.products.controller";
+
 import { IProduct, Product } from "../../models/product.model";
+export interface AddProductsRequestBody{
+    productName : string;
+    productCompany : string;
+    productCategory : string;
+    productStockQuantity : number;
+    productPrice : number;
+    coverImage : string;
+}
 interface BulkAddRequestBody{
-    products : AddProductRequestBody[]
+    products : AddProductsRequestBody[]
 }
 export const bulkAdd = async (req : RequestInterface , res : Response) => {
     const response = new ResponseStream(res);
