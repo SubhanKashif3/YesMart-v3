@@ -5,7 +5,7 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Auth from './pages/auth/Auth.tsx'
 import Dashboard from './pages/Dashboard/Dashboard.tsx'
-
+import { Toaster } from './components/ui/toaster.tsx'
 const router = createBrowserRouter([
   {
     path : "/",
@@ -26,6 +26,7 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
   <RouterProvider router={router}/>
+  <Toaster/>
   </StrictMode>
 )
 
