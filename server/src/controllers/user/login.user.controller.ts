@@ -6,8 +6,7 @@ import { ResponseStream , StatusCodes} from "json-response-sender";
 type PhoneNumberAndPassword = string | number
 
 interface LoginRequestBody{
-    emailOrPassword : PhoneNumberAndPassword;
-    phoneNumber? : number;
+    emailOrPhoneNumber : PhoneNumberAndPassword;
     password :  string;
 
 };
@@ -16,17 +15,17 @@ export const login = async (req : RequestInterface ,res : Response) => {
     const response = new ResponseStream(res);
     try {
         const {
-            emailOrPassword,
+            emailOrPhoneNumber,
             password
         } : LoginRequestBody = req.body;
 
         
         let user : IUser | null;
         
-        if (typeof(emailOrPassword) === "number"){
-           user  =  await User.findOne({phoneNumber : emailOrPassword})
+        if (typeof(emailOrPhoneNumber) === "number"){
+           user  =  await User.findOne({phoneNumber : emailOrPhoneNumber})
         }else{
-            user = await User.findOne({email : emailOrPassword});
+            user = await User.findOne({email : emailOrPhoneNumber});
         };
 
 

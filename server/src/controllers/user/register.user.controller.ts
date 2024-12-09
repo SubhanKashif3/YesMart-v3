@@ -14,6 +14,8 @@ interface RegisterRequestBody {
 }
 
 export const register = async (req: RequestInterface, res: Response): Promise<Response> => {
+    console.log(req.body);
+    
     const response = new ResponseStream(res);
     try {
         const { firstName, lastName, email, password, phoneNumber }: RegisterRequestBody = req.body;

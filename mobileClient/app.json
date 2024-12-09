@@ -1,46 +1,31 @@
 {
   "expo": {
-    "name": "YesMart",
-    "slug": "YesMart",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/applogo.png",
-    "scheme": "YesMart",
+    "scheme": "acme",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/applogo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "yesmart"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/applogo.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.subhan_kashif7.YesMart"
-    },
+    "orientation": "default",
     "web": {
-      "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "bundler": "metro"
     },
+    "newArchEnabled" : false,
     "plugins": [
-      "expo-router"
+      [
+        "expo-router",
+        {
+          "origin": "https://n"
+        }
+      ]
     ],
-    "experiments": {
-      "typedRoutes": true
-    },
+    "name": "mobileClient",
+    "slug": "mobileClient",
     "extra": {
       "router": {
-        "origin": false
+        "origin": "https://n"
       },
       "eas": {
-        "projectId": "27c13797-d3a3-496a-b8c7-08e84e25fbde"
+        "projectId": "beeb69a1-8aae-4554-8f52-9a509914ca9f"
       }
-    }
+    },
+    "owner": "subhan_kashif72"
   }
 }

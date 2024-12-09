@@ -3,6 +3,7 @@ import { generateAdminRefreshAndAccessToken } from "../../utilities/generateAdmi
 
 import { cookieOptions } from "../../constants/cookieOptions";
 import { ResponseStream, StatusCodes } from "json-response-sender";
+import { log } from "console";
 
 
 interface AdminLoginRequestBody {
@@ -10,6 +11,7 @@ interface AdminLoginRequestBody {
 }
 
 export const login = (req: Request, res: Response) => {
+    log(req.body)
     const response = new ResponseStream(res);
     try {
         const { password }: AdminLoginRequestBody = req.body;
