@@ -20,7 +20,8 @@ const Signup = () => {
       password,
       address,
       phoneNumber
-      },{withCredentials : true})
+      },{withCredentials : true});
+      console.log(httpRequest);
     } catch (error) {
       console.log((error as Error).message);
     }

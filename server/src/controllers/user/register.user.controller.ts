@@ -43,10 +43,11 @@ export const register = async (req: RequestInterface, res: Response): Promise<Re
         const refreshToken: string = newUser.generateRefreshToken();
 
         res.cookie("accessToken", accessToken, cookieOptions).cookie("refreshToken", refreshToken, cookieOptions);
-
+        console.log(newUser);
         return response.jsonResponseSender(StatusCodes.Created,"Registered and logged in success",{
             user: newUser
-        })
+        });
+
 
     } catch (error) {
         return response.jsonErrorResponseSender(StatusCodes.InternalServerError,"Something went wrong while registering user",(error as Error))
